@@ -1,0 +1,16 @@
+[
+  {
+    "time": "2026-11-07 12:54",
+    "predicted": "Low oil / oil pressure failure",
+    "confidence": 80.0,
+    "correct": true,
+    "actual": null,
+    "symptoms": [
+      "fuel_smell",
+      "knocking",
+      "long_stopping",
+      "oil_light",
+      "pedal_sinks"
+    ]
+  }
+]
