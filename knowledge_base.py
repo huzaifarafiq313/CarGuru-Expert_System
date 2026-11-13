@@ -3,13 +3,13 @@ KNOWLEDGE BASE - Car Fault Diagnosis Expert System
 ---------------------------------------------------
 Contains:
   * SYMPTOMS : every fact the user can report  (key -> (category, description))
-  * RULES    : 67 weighted IF-THEN rules       (symptoms + weights -> fault + fix)
+  * RULES    : 78 weighted IF-THEN rules       (symptoms + weights -> fault + fix)
 
 Each rule's weights add up to 1.0, so
     confidence = (sum of weights of the reported symptoms) x 100
 """
 
-# ------------------------- settings -------------------------
+# settings 
 THRESHOLD = 40          # a fault is shown only if confidence >= 40 %
 MULTI_THRESHOLD = 50    # confidence needed for a 2nd/3rd independent fault
 CRITICAL_ALERT = 60     # confidence at which a Critical fault triggers a warning
@@ -25,9 +25,10 @@ CATEGORIES = [
     "Electrical & Battery",
     "Exhaust & Emissions",
     "Climate Control",
+    "Hybrid & Electric Drivetrain",
 ]
 
-# ------------------------- symptoms (facts) -------------------------
+#  symptoms (facts) -
 SYMPTOMS = {
     # ---- Engine & Fuel ----
     "wont_start":        ("Engine & Fuel", "Engine does not start at all"),
@@ -51,7 +52,7 @@ SYMPTOMS = {
     "hiss_engine":       ("Engine & Fuel", "Hissing sound from the engine bay"),
     "backfire":          ("Engine & Fuel", "Popping or backfiring sounds"),
 
-    # ---- Cooling ----
+    #  Cooling 
     "temp_high":         ("Cooling", "Temperature gauge is high (overheating)"),
     "steam":             ("Cooling", "Steam coming from under the hood"),
     "coolant_low":       ("Cooling", "Coolant level is low"),
@@ -102,7 +103,7 @@ SYMPTOMS = {
     "tire_bulge":        ("Steering, Suspension & Tires", "Bulge or cut visible on a tire"),
     "hum_wheel":         ("Steering, Suspension & Tires", "Humming / roaring noise that rises with speed"),
 
-    # ---- Transmission & Clutch ----
+    #  Transmission & Clutch 
     "clutch_slip":       ("Transmission & Clutch", "Clutch slips (revs rise, car does not speed up)"),
     "clutch_hard":       ("Transmission & Clutch", "Clutch pedal is hard or sticky"),
     "clutch_soft":       ("Transmission & Clutch", "Clutch pedal goes soft / stays on the floor"),
@@ -117,7 +118,7 @@ SYMPTOMS = {
     "diff_hum":          ("Transmission & Clutch", "Humming from the front / rear axle"),
     "clunk_gear":        ("Transmission & Clutch", "Clunk when shifting or on / off throttle"),
 
-    # ---- Electrical & Battery ----
+    #  Electrical & Battery 
     "clicking":          ("Electrical & Battery", "Clicking sound when turning the key"),
     "dim_lights":        ("Electrical & Battery", "Headlights / dashboard are dim or weak"),
     "battery_light":     ("Electrical & Battery", "Battery warning light is on"),
@@ -130,7 +131,7 @@ SYMPTOMS = {
     "blown_fuses":       ("Electrical & Battery", "Fuses keep blowing"),
     "burning_wire_smell": ("Electrical & Battery", "Burning plastic / wire smell"),
 
-    # ---- Exhaust & Emissions ----
+    # Exhaust & Emissions 
     "white_smoke":       ("Exhaust & Emissions", "White smoke from the exhaust"),
     "black_smoke":       ("Exhaust & Emissions", "Black smoke from the exhaust"),
     "blue_smoke":        ("Exhaust & Emissions", "Blue / grey smoke from the exhaust"),
@@ -142,7 +143,7 @@ SYMPTOMS = {
     "oil_consumption":   ("Exhaust & Emissions", "Oil level drops quickly between changes"),
     "tick_cold":         ("Exhaust & Emissions", "Ticking on cold start that fades as it warms"),
 
-    # ---- Climate Control ----
+    # Climate Control 
     "ac_warm":           ("Climate Control", "AC blows warm air"),
     "ac_hiss":           ("Climate Control", "Hissing from the dashboard when AC is on"),
     "ac_cycling":        ("Climate Control", "AC switches on and off rapidly"),
@@ -153,6 +154,33 @@ SYMPTOMS = {
     "no_air":            ("Climate Control", "No air from vents at some fan speeds"),
     "fogged_windows":    ("Climate Control", "Windows fog up and will not clear"),
     "wet_carpet":        ("Climate Control", "Wet carpet / water inside the cabin"),
+
+    # ---- Hybrid & Electric Drivetrain (advanced / scan-tool level faults) ----
+    "hybrid_warning":    ("Hybrid & Electric Drivetrain", "Hybrid system warning light is on"),
+    "ev_range_drop":     ("Hybrid & Electric Drivetrain", "Battery range or charge level drops unusually fast"),
+    "engine_runs_constantly": ("Hybrid & Electric Drivetrain", "Petrol engine runs constantly and rarely switches off"),
+    "hv_cooling_fan":    ("Hybrid & Electric Drivetrain", "Hybrid battery cooling fan is unusually loud"),
+    "soc_jumps":         ("Hybrid & Electric Drivetrain", "Battery charge level jumps or fluctuates suddenly"),
+    "dtc_p0a80":         ("Hybrid & Electric Drivetrain", "Scan tool shows code P0A80 (replace hybrid battery)"),
+    "dtc_cell_imbalance": ("Hybrid & Electric Drivetrain", "Scan tool shows large cell-voltage imbalance"),
+    "reduced_power":     ("Hybrid & Electric Drivetrain", "Vehicle enters reduced-power (limp) mode"),
+    "hv_battery_hot":    ("Hybrid & Electric Drivetrain", "Battery temperature warning is displayed"),
+    "inverter_whine":    ("Hybrid & Electric Drivetrain", "High-pitched whine from the motor / inverter"),
+    "inverter_temp":     ("Hybrid & Electric Drivetrain", "Inverter or motor temperature warning"),
+    "dtc_inverter":      ("Hybrid & Electric Drivetrain", "Scan tool shows inverter fault code (P0A78 / P0A7A)"),
+    "motor_judder":      ("Hybrid & Electric Drivetrain", "Judder when pulling away on electric power"),
+    "dcdc_drain":        ("Hybrid & Electric Drivetrain", "12V battery drains repeatedly even after driving"),
+    "ready_not_on":      ("Hybrid & Electric Drivetrain", "Vehicle will not enter READY / drive mode"),
+    "hv_isolation":      ("Hybrid & Electric Drivetrain", "High-voltage isolation / ground-fault warning"),
+    "dtc_isolation":     ("Hybrid & Electric Drivetrain", "Scan tool shows insulation fault code (P0AA6)"),
+    "ready_clunk":       ("Hybrid & Electric Drivetrain", "Loud clunk from the battery area when starting"),
+    "charging_fails":    ("Hybrid & Electric Drivetrain", "Vehicle will not charge from the charger"),
+    "charge_port_hot":   ("Hybrid & Electric Drivetrain", "Charging port or cable becomes very hot"),
+    "charging_slow":     ("Hybrid & Electric Drivetrain", "Charging is much slower than normal"),
+    "charge_error_light": ("Hybrid & Electric Drivetrain", "Charging indicator flashes an error"),
+    "hv_burning_smell":  ("Hybrid & Electric Drivetrain", "Burning smell near the charging port or battery"),
+    "regen_weak":        ("Hybrid & Electric Drivetrain", "Regenerative braking feels weak or inconsistent"),
+    "brake_pedal_odd":   ("Hybrid & Electric Drivetrain", "Brake pedal feels unusual on a hybrid / electric car"),
 }
 
 # ------------------------- rules -------------------------
@@ -383,14 +411,52 @@ rule("Blocked evaporator drain / mould", "Climate Control", "Low",
      "Clear the AC drain and disinfect the evaporator.")
 
 
+# ======== Hybrid & Electric Drivetrain (11) - advanced faults that need a scan tool / specialist ========
+rule("Hybrid battery pack degradation", "Hybrid & Electric Drivetrain", "High",
+     {"ev_range_drop": .25, "engine_runs_constantly": .20, "soc_jumps": .20, "hv_cooling_fan": .15,
+      "hybrid_warning": .10, "dtc_p0a80": .10},
+     "Load-test the hybrid battery; recondition weak modules or replace the pack.")
+rule("Hybrid battery cell imbalance", "Hybrid & Electric Drivetrain", "Medium",
+     {"soc_jumps": .30, "dtc_cell_imbalance": .30, "ev_range_drop": .20, "reduced_power": .20},
+     "Run a module balance test and replace the weak modules.")
+rule("Hybrid battery cooling fan / duct blockage", "Hybrid & Electric Drivetrain", "Low",
+     {"hv_cooling_fan": .45, "hv_battery_hot": .25, "ev_range_drop": .15, "hybrid_warning": .15},
+     "Clean the battery air intake filter and ducts; test the cooling fan.")
+rule("Inverter / motor-generator fault", "Hybrid & Electric Drivetrain", "High",
+     {"inverter_whine": .30, "reduced_power": .25, "inverter_temp": .20, "dtc_inverter": .15, "motor_judder": .10},
+     "Read the inverter codes, then inspect the inverter and motor-generator.")
+rule("Inverter coolant pump failure", "Hybrid & Electric Drivetrain", "High",
+     {"inverter_temp": .40, "reduced_power": .25, "coolant_low": .20, "hybrid_warning": .15},
+     "Test the inverter coolant pump, replace it and bleed the loop.")
+rule("DC-DC converter failure", "Hybrid & Electric Drivetrain", "High",
+     {"dcdc_drain": .35, "battery_light": .20, "dim_lights": .15, "hybrid_warning": .15, "ready_not_on": .15},
+     "Test the DC-DC output (about 13.5-14.5 V) and replace the converter.")
+rule("High-voltage insulation (isolation) fault", "Hybrid & Electric Drivetrain", "Critical",
+     {"hv_isolation": .45, "dtc_isolation": .25, "hybrid_warning": .15, "ready_not_on": .15},
+     "Do NOT touch the orange HV cables. Have a certified HV technician locate the leakage.")
+rule("HV contactor / system main relay fault", "Hybrid & Electric Drivetrain", "High",
+     {"ready_not_on": .35, "ready_clunk": .25, "hybrid_warning": .20, "reduced_power": .20},
+     "Test the system main relays and replace the faulty contactor.")
+rule("Charging port / cable overheating", "Hybrid & Electric Drivetrain", "Critical",
+     {"charge_port_hot": .50, "hv_burning_smell": .25, "charging_slow": .25},
+     "Stop charging at once; inspect the charge-port contacts and cable for damage.")
+rule("On-board charger / charging control fault", "Hybrid & Electric Drivetrain", "Medium",
+     {"charging_fails": .40, "charge_error_light": .30, "charging_slow": .15, "hybrid_warning": .15},
+     "Test the charging station first, then the on-board charger and charge-port module.")
+rule("Regenerative braking system fault", "Hybrid & Electric Drivetrain", "High",
+     {"regen_weak": .35, "brake_pedal_odd": .25, "brake_light": .20, "abs_light": .10, "hybrid_warning": .10},
+     "Scan the brake-control ECU; inspect the brake actuator and regen calibration.")
+
+
 # ------------------------- demo scenarios (for live presentation) -------------------------
 DEMO_SCENARIOS = {
-    "🌡️ Overheating": ["temp_high", "steam", "coolant_low"],
-    "🛑 Spongy brakes": ["soft_pedal", "brake_fluid_low", "brake_light", "long_stopping"],
-    "🔀 Won't start + bad brakes (2 faults)": ["wont_start", "clicking", "dim_lights", "battery_old",
+    "Overheating engine": ["temp_high", "steam", "coolant_low"],
+    "Spongy brake pedal": ["soft_pedal", "brake_fluid_low", "brake_light", "long_stopping"],
+    "Won't start + worn brakes (2 faults)": ["wont_start", "clicking", "dim_lights", "battery_old",
                                               "squeal_brakes", "grinding_brakes", "long_stopping"],
-    "🚗 Shaky steering": ["vibration_wheel", "vibration_seat", "uneven_tires"],
-    "💨 Blue smoke": ["blue_smoke", "burning_oil_smell", "oil_consumption"],
+    "Shaky steering wheel": ["vibration_wheel", "vibration_seat", "uneven_tires"],
+    "Blue exhaust smoke": ["blue_smoke", "burning_oil_smell", "oil_consumption"],
+    "Hybrid battery trouble": ["ev_range_drop", "engine_runs_constantly", "soc_jumps", "hv_cooling_fan"],
 }
 
 
