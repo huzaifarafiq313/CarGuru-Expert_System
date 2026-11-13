@@ -19,9 +19,7 @@ RULE_BY_NAME = {r["name"]: r for r in RULES}
 SEVERITY_NAME = {v: k for k, v in SEVERITY_RANK.items()}
 
 
-# ---------------------------------------------------------------
 # 1. FORWARD CHAINING
-# ---------------------------------------------------------------
 def infer(facts, threshold=THRESHOLD, min_matched=1):
     """Test EVERY rule against the reported facts.
     confidence = sum(weights of matched symptoms) x 100
@@ -42,9 +40,9 @@ def infer(facts, threshold=THRESHOLD, min_matched=1):
     return results
 
 
-# ---------------------------------------------------------------
+
 # 2. SELF-EXPLAINING "WHY NOT?"
-# ---------------------------------------------------------------
+
 def why_not(rule_name, facts):
     """Explain why a given fault was (or was not) accepted."""
     rule = RULE_BY_NAME[rule_name]
@@ -69,9 +67,9 @@ def why_not(rule_name, facts):
             "confidence_if_needed": round(min(running, 100.0), 1)}
 
 
-# ---------------------------------------------------------------
+
 # 3. RULE JUSTIFICATION ("show your work")
-# ---------------------------------------------------------------
+
 def rule_breakdown(rule_name, facts):
     """Row-by-row weight table + formula text for one rule."""
     rule = RULE_BY_NAME[rule_name]
@@ -86,9 +84,9 @@ def rule_breakdown(rule_name, facts):
     return {"rule": rule, "rows": rows, "total": round(total * 100, 1), "formula": formula}
 
 
-# ---------------------------------------------------------------
+
 # 4. SEVERITY-BASED QUESTION ORDERING
-# ---------------------------------------------------------------
+
 @lru_cache(maxsize=None)
 def _priority():
     """For every symptom: (highest severity rank among rules using it, its biggest weight there)."""
@@ -122,9 +120,8 @@ def ordered_symptoms(categories=None):
                   key=lambda s: (-pri[s][0], -pri[s][1], SYMPTOMS[s][1]))
 
 
-# ---------------------------------------------------------------
-# 5. MULTI-FAULT DETECTION  ("explaining away")
-# ---------------------------------------------------------------
+# 5. MULTI-FAULT DETECTION 
+
 def detect_multiple_faults(facts, max_faults=4):
     """1) take the best fault
        2) remove the symptoms it explains
